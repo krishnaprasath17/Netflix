@@ -1,1 +1,271 @@
-<h1> Welcome to Netflix <h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Netflix Style Landing Page</title>
+  <style>
+    :root{
+      --bg:#0b0b0f;
+      --bg-soft:#12121a;
+      --text:#ffffff;
+      --muted:#b5b8c5;
+      --accent:#e50914;      /* Netflix red */
+      --accent-2:#ff4d4f;    /* lighter red */
+      --card:#1a1a24;
+      --success:#22c55e;
+      --warning:#f59e0b;
+      --link:#5eb6ff;
+      --shadow: 0 10px 30px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif}
+
+    /* Header */
+    .header{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter:saturate(140%) blur(10px);
+      background:linear-gradient(180deg, rgba(10,10,14,.85), rgba(10,10,14,.45) 70%, transparent);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .nav{
+      max-width:1200px; margin:auto; padding:14px 20px; display:flex; align-items:center; gap:14px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.7px;
+    }
+    .logo{
+      width:28px; height:28px; border-radius:6px;
+      background: conic-gradient(from 210deg, var(--accent), #c20d17, #79080d, var(--accent));
+      box-shadow:0 0 0 3px rgba(229,9,20,.15), 0 6px 18px rgba(229,9,20,.45);
+    }
+    .nav-links{margin-left:auto; display:flex; gap:14px; align-items:center; flex-wrap:wrap}
+    .btn{
+      appearance:none; border:0; cursor:pointer; font-weight:700;
+      padding:10px 14px; border-radius:12px; transition:transform .08s ease, filter .2s ease, background .2s ease, box-shadow .2s ease; 
+    }
+    .btn:active{transform:translateY(1px)}
+    .btn-ghost{background:rgba(255,255,255,.06); color:var(--text)}
+    .btn-ghost:hover{background:rgba(255,255,255,.12)}
+    .btn-primary{background:linear-gradient(135deg, var(--accent), var(--accent-2)); color:#fff; box-shadow:0 8px 24px rgba(229,9,20,.35)}
+    .btn-primary:hover{filter:saturate(1.05) brightness(1.02)}
+    .select{
+      background:rgba(255,255,255,.06); color:var(--text); border:1px solid rgba(255,255,255,.12); 
+      padding:10px 12px; border-radius:12px;
+    }
+
+    /* Hero */
+    .hero{
+      position:relative; overflow:hidden;
+      background:
+        radial-gradient(1200px 500px at 80% -10%, rgba(229,9,20,.25), transparent 60%),
+        radial-gradient(900px 500px at -10% 20%, rgba(94,182,255,.25), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.05), transparent 40%),
+        var(--bg);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .hero-inner{
+      max-width:1200px; margin:auto; padding:82px 20px 56px;
+      display:grid; grid-template-columns:1.2fr .8fr; gap:22px;
+    }
+    @media (max-width:900px){ .hero-inner{grid-template-columns:1fr} }
+    .kicker{color:var(--link); font-weight:700; text-transform:uppercase; letter-spacing:.12em; font-size:12px}
+    h1{font-size:clamp(36px, 5vw, 56px); line-height:1.05; margin:10px 0 12px; text-wrap:balance}
+    .sub{color:var(--muted); font-size:clamp(15px, 1.6vw, 18px); max-width:60ch}
+    .cta{
+      margin-top:20px; display:flex; gap:10px; flex-wrap:wrap;
+      background:rgba(255,255,255,.04); padding:10px; border-radius:14px; border:1px solid rgba(255,255,255,.08);
+    }
+    .field{
+      flex:1; min-width:220px; display:flex; gap:8px; align-items:center; background:rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.15); border-radius:12px; padding:8px 10px;
+    }
+    .field input{
+      flex:1; background:transparent; border:0; outline:0; color:#fff; padding:6px;
+    }
+    .badge{
+      display:inline-flex; align-items:center; gap:8px; font-weight:700; color:#fff;
+      background:linear-gradient(135deg,#22c55e,#16a34a); padding:8px 12px; border-radius:999px; box-shadow:0 8px 18px rgba(34,197,94,.25);
+    }
+
+    /* Poster wall (fake carousel) */
+    .wall{
+      display:grid; grid-template-columns:repeat(5, 1fr); gap:12px; margin-top:10px;
+    }
+    @media (max-width:900px){ .wall{grid-template-columns:repeat(3,1fr)} }
+    @media (max-width:520px){ .wall{grid-template-columns:repeat(2,1fr)} }
+    .tile{
+      aspect-ratio: 16/9; border-radius:16px; overflow:hidden; background:var(--card);
+      position:relative; box-shadow:var(--shadow); border:1px solid rgba(255,255,255,.06);
+    }
+    .tile::after{
+      content:""; position:absolute; inset:0;
+      background:linear-gradient(180deg, rgba(0,0,0,0) 30%, rgba(0,0,0,.5) 100%);
+    }
+    .tile .label{
+      position:absolute; left:10px; bottom:8px; z-index:2; font-weight:700; font-size:12px; color:#fff;
+      background:rgba(0,0,0,.5); padding:6px 8px; border-radius:10px; border:1px solid rgba(255,255,255,.15);
+    }
+    .t1{background:linear-gradient(135deg,#ff7a7a,#e50914)}
+    .t2{background:linear-gradient(135deg,#8b5cf6,#22d3ee)}
+    .t3{background:linear-gradient(135deg,#22c55e,#06b6d4)}
+    .t4{background:linear-gradient(135deg,#f59e0b,#ef4444)}
+    .t5{background:linear-gradient(135deg,#60a5fa,#a78bfa)}
+    .t6{background:linear-gradient(135deg,#34d399,#10b981)}
+    .t7{background:linear-gradient(135deg,#fb7185,#f472b6)}
+    .t8{background:linear-gradient(135deg,#f97316,#f43f5e)}
+    .t9{background:linear-gradient(135deg,#38bdf8,#22d3ee)}
+    .t10{background:linear-gradient(135deg,#a3e635,#34d399)}
+
+    /* Feature cards */
+    .section{max-width:1200px; margin:40px auto; padding:0 20px}
+    .cards{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+    @media (max-width:900px){ .cards{grid-template-columns:1fr} }
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:22px; box-shadow:var(--shadow);
+    }
+    .card h3{margin:0 0 6px; font-size:20px}
+    .pill{
+      display:inline-block; font-size:12px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+      padding:6px 10px; border-radius:999px; margin-bottom:10px; border:1px solid rgba(255,255,255,.14);
+    }
+    .pill.red{background:rgba(229,9,20,.12); color:#ffd2d5}
+    .pill.blue{background:rgba(94,182,255,.12); color:#d5ecff}
+    .pill.gold{background:rgba(245,158,11,.12); color:#ffe8c2}
+    .muted{color:var(--muted)}
+    .list{margin:10px 0 0; padding:0 0 0 18px}
+    .list li{margin:6px 0}
+
+    /* FAQ */
+    .faq{max-width:900px; margin:20px auto; padding:0 20px}
+    details{
+      background:var(--bg-soft); border:1px solid rgba(255,255,255,.08);
+      border-radius:14px; padding:14px 16px; margin:10px 0; box-shadow:var(--shadow);
+    }
+    details[open]{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02))}
+    summary{cursor:pointer; font-weight:700}
+    summary::-webkit-details-marker{display:none}
+    .answer{color:var(--muted); margin-top:8px}
+
+    /* Footer */
+    footer{
+      border-top:1px solid rgba(255,255,255,.08);
+      background:linear-gradient(180deg, rgba(255,255,255,.03), transparent 60%), var(--bg);
+      margin-top:50px;
+    }
+    .footer-inner{max-width:1200px; margin:auto; padding:28px 20px; display:grid; gap:10px}
+    .links{display:grid; grid-template-columns:repeat(4,1fr); gap:10px}
+    @media (max-width:900px){ .links{grid-template-columns:repeat(2,1fr)} }
+    .links a{color:var(--muted); text-decoration:none}
+    .links a:hover{color:#fff}
+    .copyright{color:var(--muted); font-size:13px}
+    .ribbon{
+      position:absolute; right:-36px; top:20px; transform:rotate(35deg);
+      background:linear-gradient(135deg, var(--accent), var(--accent-2));
+      color:#fff; padding:8px 60px; font-weight:800; letter-spacing:.08em; box-shadow:var(--shadow)
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <nav class="nav">
+      <div class="brand">
+        <span class="logo" aria-hidden="true"></span>
+        <span>Netflux</span>
+      </div>
+      <div class="nav-links">
+        <select class="select" aria-label="Language">
+          <option>English</option>
+          <option>தமிழ்</option>
+          <option>हिन्दी</option>
+        </select>
+        <button class="btn btn-ghost">Sign In</button>
+        <button class="btn btn-primary">Join Now</button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <span class="kicker">Unlimited movies, TV shows & more</span>
+        <h1>Entertainment in living color.</h1>
+        <p class="sub">Watch anywhere. Cancel anytime. Ready to watch? Enter your email to create or restart your membership.</p>
+        <div class="cta" role="group" aria-label="Email signup">
+          <div class="field">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16v12H4z" stroke="white" opacity=".6"/><path d="m4 7 8 6 8-6" stroke="white"/></svg>
+            <input type="email" placeholder="Email address" aria-label="Email address">
+          </div>
+          <button class="btn btn-primary">Get Started →</button>
+          <span class="badge">New: 4K included</span>
+        </div>
+
+        <div class="wall" aria-hidden="true">
+          <div class="tile t1"><span class="label">Top 10 • India</span></div>
+          <div class="tile t2"><span class="label">New Season</span></div>
+          <div class="tile t3"><span class="label">Drama</span></div>
+          <div class="tile t4"><span class="label">Action</span></div>
+          <div class="tile t5"><span class="label">Comedy</span></div>
+          <div class="tile t6"><span class="label">Anime</span></div>
+          <div class="tile t7"><span class="label">Romance</span></div>
+          <div class="tile t8"><span class="label">Thriller</span></div>
+          <div class="tile t9"><span class="label">Documentary</span></div>
+          <div class="tile t10"><span class="label">Kids</span></div>
+        </div>
+      </div>
+
+      <div>
+        <div class="card" style="min-height:240px">
+          <span class="pill red">Profiles</span>
+          <h3>Create profiles for kids</h3>
+          <p class="muted">Send children on adventures with their favorite characters in a space made just for them—free with your membership.</p>
+          <ul class="list">
+            <li>Parental controls with PIN</li>
+            <li>Age-appropriate recommendations</li>
+            <li>Download for offline viewing</li>
+          </ul>
+        </div>
+        <div class="card" style="margin-top:12px">
+          <span class="pill blue">Downloads</span>
+          <h3>Watch offline in brilliant color</h3>
+          <p class="muted">Save your favorites and watch on the go with vibrant HDR playback.</p>
+        </div>
+      </div>
+    </div>
+    <div class="ribbon">LIMITED OFFER</div>
+  </section>
+
+  <!-- Features -->
+  <section class="section">
+    <div class="cards">
+      <div class="card">
+        <span class="pill gold">4K + HDR</span>
+        <h3>Stunning Visuals</h3>
+        <p class="muted">Ultra-sharp resolution, rich contrast, and vivid colors on supported devices.</p>
+      </div>
+      <div class="card">
+        <span class="pill blue">Everywhere</span>
+        <h3>Watch on any device</h3>
+        <p class="muted">Smart TVs, PlayStation, Xbox, Chromecast, Apple TV, Blu-ray players, and more.</p>
+      </div>
+      <div class="card">
+        <span class="pill red">No Ads</span>
+        <h3>Just stories</h3>
+        <p class="muted">Enjoy uninterrupted movies and shows with cinematic sound.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="faq">
+    <h2 style="margin:0 0 10px; font-size:28px">Frequently Asked Questions</h2>
+
+    <details>
+      <summary>What is Netflux?</summary>
+      <div class="answer">A colorful demo of a Netflix-style landing page. Swap 
